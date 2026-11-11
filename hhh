@@ -1,0 +1,122 @@
+
+const express = require("express");
+
+const app = express();
+const PORT = 3000;
+
+// Permite recibir información en formato JSON
+app.use(express.json());
+
+// Base de datos temporal
+let alumnos = [
+    {
+        id: 1,
+        nombre: "Masha",
+        edad: 22,
+        carrera: "Ingeniería Informática"
+    },
+    {
+        id: 2,
+        nombre: "Lucas",
+        edad: 20,
+        carrera: "Diseño"
+    }
+];
+
+// GET: Obtener todos los alumnos
+app.get("/alumnos", (req, res) => {
+    res.json(alumnos);
+});
+
+// GET: Obtener un alumno por ID
+app.get("/alumnos/:id", (req, res) => {
+    const id = Number(req.params.id);
+
+    const alumno = alumnos.find(a => a.id === id);
+
+    if (!alumno) {
+        return res.status(404).json({
+            mensaje: "Alumno no encontrado"
+        });
+    }
+
+    res.json(alumno);
+});
+
+// POST: Crear un alumno
+app.post("/alumnos", (req, res) => {
+    const { nombre, edad, carrera } = req.body;
+
+    if (!nombre || !edad || !carrera) {
+        return res.status(400).json({
+            mensaje: "Faltan datos del alumno"
+        });
+    }
+
+    const nuevoAlumno = {
+        id: alumnos.length
+            ? Math.max(...alumnos.map(a => a.id)) + 1
+            : 1,
+        nombre,
+        edad,
+        carrera
+    };
+
+    alumnos.push(nuevoAlumno);
+
+    res.status(201).json(nuevoAlumno);
+});
+
+// PUT: Actualizar un alumno
+app.put("/alumnos/:id", (req, res) => {
+    const id = Number(req.params.id);
+
+    const alumno = alumnos.find(a => a.id === id);
+
+    if (!alumno) {
+        return res.status(404).json({
+            mensaje: "Alumno no encontrado"
+        });
+    }
+
+    const { nombre, edad, carrera } = req.body;
+
+    if (!nombre || !edad || !carrera) {
+        return res.status(400).json({
+            mensaje: "Debes enviar todos los datos"
+        });
+    }
+
+    alumno.nombre = nombre;
+    alumno.edad = edad;
+    alumno.carrera = carrera;
+
+    res.json({
+        mensaje: "Alumno actualizado",
+        alumno
+    });
+});
+
+// DELETE: Eliminar un alumno
+app.delete("/alumnos/:id", (req, res) => {
+    const id = Number(req.params.id);
+
+    const existe = alumnos.some(a => a.id === id);
+
+    if (!existe) {
+        return res.status(404).json({
+            mensaje: "Alumno no encontrado"
+        });
+    }
+
+    alumnos = alumnos.filter(a => a.id !== id);
+
+    res.json({
+        mensaje: "Alumno eliminado correctamente"
+    });
+});
+
+// Iniciar servidor
+app.listen(PORT, () => {
+    console.log(`Servidor funcionando en http://localhost:${PORT}`);
+});
