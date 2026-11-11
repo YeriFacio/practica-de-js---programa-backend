@@ -1,0 +1,92 @@
+
+/* USERS */
+
+// GET: Obtener todos los usuarios
+app.get("/users", (req, res) => {
+    res.json(alumnos);
+});
+
+// GET: Obtener un usuario por ID
+app.get("/users/:id", (req, res) => {
+    const id = Number(req.params.id);
+
+    const usuario = alumnos.find(a => a.id === id);
+
+    if (!usuario) {
+        return res.status(404).json({
+            mensaje: "Usuario no encontrado"
+        });
+    }
+
+    res.json(usuario);
+});
+
+// POST: Crear un usuario
+app.post("/users", (req, res) => {
+    const { nombre, edad, carrera } = req.body;
+
+    if (!nombre || !edad || !carrera) {
+        return res.status(400).json({
+            mensaje: "Faltan datos"
+        });
+    }
+
+    const nuevoUsuario = {
+        id: alumnos.length
+            ? Math.max(...alumnos.map(a => a.id)) + 1
+            : 1,
+        nombre,
+        edad,
+        carrera
+    };
+
+    alumnos.push(nuevoUsuario);
+
+    res.status(201).json(nuevoUsuario);
+});
+
+// PUT: Actualizar un usuario
+app.put("/users/:id", (req, res) => {
+    const id = Number(req.params.id);
+
+    const usuario = alumnos.find(a => a.id === id);
+
+    if (!usuario) {
+        return res.status(404).json({
+            mensaje: "Usuario no encontrado"
+        });
+    }
+
+    const { nombre, edad, carrera } = req.body;
+
+    if (!nombre || !edad || !carrera) {
+        return res.status(400).json({
+            mensaje: "Faltan datos"
+        });
+    }
+
+    usuario.nombre = nombre;
+    usuario.edad = edad;
+    usuario.carrera = carrera;
+
+    res.json(usuario);
+});
+
+// DELETE: Eliminar un usuario
+app.delete("/users/:id", (req, res) => {
+    const id = Number(req.params.id);
+
+    const existe = alumnos.some(a => a.id === id);
+
+    if (!existe) {
+        return res.status(404).json({
+            mensaje: "Usuario no encontrado"
+        });
+    }
+
+    alumnos = alumnos.filter(a => a.id !== id);
+
+    res.json({
+        mensaje: "Usuario eliminado correctamente"
+    });
+});
