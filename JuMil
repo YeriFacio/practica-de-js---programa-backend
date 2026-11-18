@@ -17,3 +17,20 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });
+
+
+
+#
+const express = require("express");
+
+const router = express.Router();
+
+// Primera ruta de películas de JuMil
+router.get("/", (req, res) => {
+    res.json({
+        message: "Bienvenido a la sección de películas de JuMil",
+        movies: []
+    });
+});
+
+module.exports = router;
