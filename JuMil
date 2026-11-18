@@ -1,29 +1,30 @@
-
-const express = require("express");
-
-const router = express.Router();
-
-// Importar el controlador de películas
-const movieController = require("../controllers/movie.controller");
+// Lista temporal de películas
+const movies = [];
 
 // Obtener todas las películas
-router.get("/", movieController.getMovies);
+const getMovies = (req, res) => {
+    res.json(movies);
+};
 
-module.exports = router;
+// Agregar una película
+const createMovie = (req, res) => {
+    const newMovie = {
+        id: movies.length + 1,
+        title: req.body.title,
+        year: req.body.year,
+        genre: req.body.genre,
+        synopsis: req.body.synopsis
+    };
 
+    movies.push(newMovie);
 
-
-#
-const express = require("express");
-
-const router = express.Router();
-
-// Primera ruta de películas de JuMil
-router.get("/", (req, res) => {
-    res.json({
-        message: "Bienvenido a la sección de películas de JuMil",
-        movies: []
+    res.status(201).json({
+        message: "Película agregada correctamente",
+        movie: newMovie
     });
-});
+};
 
-module.exports = router;
+module.exports = {
+    getMovies,
+    createMovie
+};
