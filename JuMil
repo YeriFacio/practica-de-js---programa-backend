@@ -8,10 +8,16 @@ const PORT = 3000;
 // Permite recibir información en formato JSON
 app.use(express.json());
 
-// Primera ruta de JuMil
+// Importar las rutas de películas
+const movieRoutes = require("./routes/movie.routes");
+
+// Ruta principal
 app.get("/", (req, res) => {
     res.send("¡Bienvenido a JuMil!");
 });
+
+// Conectar las rutas de películas
+app.use("/api/movies", movieRoutes);
 
 // Iniciar el servidor
 app.listen(PORT, () => {
