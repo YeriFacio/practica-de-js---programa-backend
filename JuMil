@@ -1,0 +1,19 @@
+
+const express = require("express");
+
+const app = express();
+
+const PORT = 3000;
+
+// Permite recibir información en formato JSON
+app.use(express.json());
+
+// Primera ruta de JuMil
+app.get("/", (req, res) => {
+    res.send("¡Bienvenido a JuMil!");
+});
+
+// Iniciar el servidor
+app.listen(PORT, () => {
+    console.log(`Servidor funcionando en http://localhost:${PORT}`);
+});
